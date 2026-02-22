@@ -7,20 +7,21 @@ import Image from 'next/image';
 
 // Animation variants
 const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-10%" },
-  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
+  hidden: { opacity: 0, y: 40 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }
+  }
 };
 
 const staggerContainer = {
-  initial: {},
-  whileInView: {
+  hidden: {},
+  visible: {
     transition: {
       staggerChildren: 0.1
     }
-  },
-  viewport: { once: true, margin: "-10%" }
+  }
 };
 
 const drawLine = {
@@ -237,8 +238,8 @@ export default function Page() {
       <section className="py-24 px-6 md:px-12 border-t border-white/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
           <motion.div
-            initial="initial"
-            whileInView="whileInView"
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, margin: "-10%" }}
             variants={staggerContainer}
           >
@@ -258,8 +259,8 @@ export default function Page() {
             </div>
           </motion.div>
           <motion.div 
-            initial="initial"
-            whileInView="whileInView"
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, margin: "-10%" }}
             variants={staggerContainer}
             className="grid grid-cols-1 gap-6"
@@ -298,8 +299,8 @@ export default function Page() {
           </motion.div>
 
           <motion.div 
-            initial="initial"
-            whileInView="whileInView"
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, margin: "-5%" }}
             variants={staggerContainer}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10"
