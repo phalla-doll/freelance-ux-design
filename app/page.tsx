@@ -144,7 +144,7 @@ export default function Page() {
               variants={fadeInUp}
               className="text-lg md:text-xl text-white/90 font-light"
             >
-              By Raunak Das
+              By Mantha
             </motion.p>
           </motion.div>
         </div>
@@ -338,14 +338,14 @@ export default function Page() {
                 {/* Placeholder for Author Image */}
                 <Image 
                   src="https://picsum.photos/400/600" 
-                  alt="Raunak Das" 
+                  alt="Mantha" 
                   fill 
                   className="object-cover"
                 />
              </div>
           </div>
           <div className="w-full md:w-2/3">
-            <h2 className="font-display text-4xl mb-6">Meet Raunak Das</h2>
+            <h2 className="font-display text-4xl mb-6">Meet Mantha</h2>
             <p className="text-xl text-white/70 mb-6 leading-relaxed">
               "I spent 5 years struggling as a freelancer before I cracked the code. Now, I run a 7-figure design agency. I wrote this book to save you the 5 years of trial and error."
             </p>
@@ -385,7 +385,7 @@ export default function Page() {
       <footer className="py-12 px-6 md:px-12 border-t border-white/10 text-center md:text-left">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-sm text-white/40">
-            © 2024 Raunak Das. All rights reserved.
+            © 2024 Mantha. All rights reserved.
           </div>
           <div className="flex gap-8 text-sm text-white/60">
             <a href="#" className="hover:text-white transition-colors">Twitter</a>
