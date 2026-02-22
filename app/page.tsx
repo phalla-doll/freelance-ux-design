@@ -71,11 +71,20 @@ export default function Page() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setItemsPerPage(1);
-      } else {
-        setItemsPerPage(3);
+      let newItemsPerPage = 3;
+      if (window.innerWidth < 640) {
+        newItemsPerPage = 1;
+      } else if (window.innerWidth < 1024) {
+        newItemsPerPage = 2;
       }
+      
+      setItemsPerPage(newItemsPerPage);
+      
+      // Ensure we don't show empty space if resizing from mobile to desktop
+      setCurrentTestimonialIndex(prev => {
+        const maxIndex = testimonials.length - newItemsPerPage;
+        return Math.min(prev, Math.max(0, maxIndex));
+      });
     };
     
     handleResize();
@@ -301,17 +310,17 @@ export default function Page() {
               {testimonials.map((testimonial, i) => (
                 <div 
                   key={i} 
-                  className="px-4"
+                  className="px-2 md:px-4"
                   style={{ width: `${100 / testimonials.length}%` }}
                 >
-                  <div className="h-full p-8 border border-white/10 rounded-2xl bg-white/5 flex flex-col justify-between">
+                  <div className="h-full p-6 md:p-8 border border-white/10 rounded-2xl bg-white/5 flex flex-col justify-between">
                     <div>
-                      <Quote className="w-8 h-8 text-white/20 mb-6" />
-                      <p className="text-lg md:text-xl font-light leading-relaxed mb-8">"{testimonial.quote}"</p>
+                      <Quote className="w-6 h-6 md:w-8 md:h-8 text-white/20 mb-4 md:mb-6" />
+                      <p className="text-base md:text-xl font-light leading-relaxed mb-6 md:mb-8">"{testimonial.quote}"</p>
                     </div>
                     <div>
-                      <div className="font-medium text-white">{testimonial.author}</div>
-                      <div className="text-sm text-white/50">{testimonial.role}, {testimonial.company}</div>
+                      <div className="font-medium text-white text-sm md:text-base">{testimonial.author}</div>
+                      <div className="text-xs md:text-sm text-white/50">{testimonial.role}, {testimonial.company}</div>
                     </div>
                   </div>
                 </div>
