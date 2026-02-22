@@ -1,23 +1,26 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowRight, Check, Star, BookOpen, Users, TrendingUp, ArrowUpRight, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import Image from 'next/image';
 
 // Animation variants
 const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  initial: { opacity: 0, y: 40 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-10%" },
+  transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] }
 };
 
 const staggerContainer = {
-  animate: {
+  initial: {},
+  whileInView: {
     transition: {
       staggerChildren: 0.1
     }
-  }
+  },
+  viewport: { once: true, margin: "-10%" }
 };
 
 const drawLine = {
@@ -68,6 +71,18 @@ const testimonials = [
 export default function Page() {
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(3);
+  
+  // Parallax hooks
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 1000], [0, 400]);
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  
+  const authorRef = useRef(null);
+  const { scrollYProgress: authorScrollY } = useScroll({
+    target: authorRef,
+    offset: ["start end", "end start"]
+  });
+  const authorY = useTransform(authorScrollY, [0, 1], [100, -100]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -103,17 +118,18 @@ export default function Page() {
       setCurrentTestimonialIndex(prev => prev - 1);
     }
   };
+
   return (
     <main className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Hero Section - Matching the Screenshot */}
-      <section className="relative h-screen w-full flex flex-col justify-between p-6 md:p-12 lg:p-16 max-w-[1600px] mx-auto">
+      <section className="relative h-screen w-full flex flex-col justify-between p-6 md:p-12 lg:p-16 max-w-[1600px] mx-auto overflow-hidden">
         
         {/* Top Labels */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="flex justify-between items-start text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/60 font-medium"
+          className="flex justify-between items-start text-[10px] md:text-xs tracking-[0.2em] uppercase text-white/60 font-medium relative z-20"
         >
           <span>Rise Higher</span>
           <span>With Your Business</span>
@@ -122,26 +138,30 @@ export default function Page() {
         {/* Main Content */}
         <div className="flex-1 flex flex-col justify-center relative z-10">
           <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
+            style={{ y: heroY, opacity: heroOpacity }}
             className="max-w-4xl"
           >
             <motion.h2 
-              variants={fadeInUp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="text-xl md:text-2xl font-light text-white/80 mb-4 md:mb-6 tracking-wide"
             >
               Freelance UX Design:
             </motion.h2>
             <motion.h1 
-              variants={fadeInUp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className="font-display text-5xl md:text-7xl lg:text-8xl font-medium leading-[0.95] tracking-tight mb-12"
             >
               How to Land Clients & <br className="hidden md:block" />
               Scale Your Business
             </motion.h1>
             <motion.p 
-              variants={fadeInUp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg md:text-xl text-white/90 font-light"
             >
               By Mantha
@@ -154,7 +174,7 @@ export default function Page() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="flex items-end justify-between"
+          className="flex items-end justify-between relative z-20"
         >
           <div className="flex items-center gap-4 group cursor-pointer">
             <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-colors duration-300">
@@ -170,7 +190,10 @@ export default function Page() {
         </motion.div>
 
         {/* Abstract Graphics - Left Curve */}
-        <div className="absolute left-0 top-1/3 w-32 h-64 md:w-48 md:h-96 pointer-events-none opacity-60">
+        <motion.div 
+          style={{ y: useTransform(scrollY, [0, 1000], [0, -200]) }}
+          className="absolute left-0 top-1/3 w-32 h-64 md:w-48 md:h-96 pointer-events-none opacity-60"
+        >
            <svg viewBox="0 0 100 200" className="w-full h-full stroke-white fill-none stroke-[0.5px]">
              <motion.path 
                d="M 0,0 Q 50,100 0,200"
@@ -185,10 +208,13 @@ export default function Page() {
                variants={drawLine}
              />
            </svg>
-        </div>
+        </motion.div>
 
         {/* Abstract Graphics - Right Cylinders */}
-        <div className="absolute right-0 bottom-0 w-48 h-48 md:w-80 md:h-80 pointer-events-none opacity-60 translate-x-1/4 translate-y-1/4">
+        <motion.div 
+          style={{ y: useTransform(scrollY, [0, 1000], [0, -100]) }}
+          className="absolute right-0 bottom-0 w-48 h-48 md:w-80 md:h-80 pointer-events-none opacity-60 translate-x-1/4 translate-y-1/4"
+        >
           <svg viewBox="0 0 200 200" className="w-full h-full stroke-white fill-none stroke-[0.5px]">
             {[0, 20, 40, 60, 80].map((offset, i) => (
               <motion.ellipse 
@@ -203,35 +229,46 @@ export default function Page() {
               />
             ))}
           </svg>
-        </div>
+        </motion.div>
       </section>
 
       {/* Expanded Context: Value Proposition */}
       <section className="py-24 px-6 md:px-12 border-t border-white/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div>
-            <h3 className="font-display text-3xl md:text-4xl mb-6">Stop trading time for money. Start building an empire.</h3>
-            <p className="text-white/60 text-lg leading-relaxed mb-8">
+          <motion.div
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-10%" }}
+            variants={staggerContainer}
+          >
+            <motion.h3 variants={fadeInUp} className="font-display text-3xl md:text-4xl mb-6">Stop trading time for money. Start building an empire.</motion.h3>
+            <motion.p variants={fadeInUp} className="text-white/60 text-lg leading-relaxed mb-8">
               Most designers get stuck in the "freelancer trap"—chasing low-paying gigs, dealing with scope creep, and burning out. This guide isn't just about design; it's about the business of design.
-            </p>
+            </motion.p>
             <div className="grid grid-cols-2 gap-8">
-              <div>
+              <motion.div variants={fadeInUp}>
                 <div className="text-4xl font-display mb-2">10k+</div>
                 <div className="text-sm text-white/50 uppercase tracking-wider">Designers Helped</div>
-              </div>
-              <div>
+              </motion.div>
+              <motion.div variants={fadeInUp}>
                 <div className="text-4xl font-display mb-2">$50M+</div>
                 <div className="text-sm text-white/50 uppercase tracking-wider">Client Value Generated</div>
-              </div>
+              </motion.div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 gap-6">
+          </motion.div>
+          <motion.div 
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-10%" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 gap-6"
+          >
             {[
               { icon: Users, title: "Client Acquisition", desc: "Systematic outreach strategies that actually work." },
               { icon: TrendingUp, title: "Pricing Psychology", desc: "How to charge 5x what you're charging now." },
               { icon: BookOpen, title: "Process Mastery", desc: "Streamline your workflow to deliver faster." }
             ].map((item, i) => (
-              <div key={i} className="flex gap-4 p-6 border border-white/10 rounded-2xl hover:bg-white/5 transition-colors">
+              <motion.div variants={fadeInUp} key={i} className="flex gap-4 p-6 border border-white/10 rounded-2xl hover:bg-white/5 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                   <item.icon className="w-6 h-6 text-white" />
                 </div>
@@ -239,21 +276,33 @@ export default function Page() {
                   <h4 className="text-xl font-medium mb-2">{item.title}</h4>
                   <p className="text-white/60">{item.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Chapter Breakdown */}
       <section className="py-24 px-6 md:px-12 bg-zinc-950">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row justify-between items-end mb-16"
+          >
             <h2 className="font-display text-4xl md:text-5xl">What's Inside</h2>
             <p className="text-white/50 mt-4 md:mt-0">200+ Pages of Actionable Tactics</p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10">
+          <motion.div 
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true, margin: "-5%" }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 border border-white/10"
+          >
             {[
               "01. The Mindset Shift",
               "02. Defining Your Niche",
@@ -265,19 +314,25 @@ export default function Page() {
               "08. Project Management",
               "09. Scaling to Agency"
             ].map((chapter, i) => (
-              <div key={i} className="bg-black p-8 hover:bg-zinc-900 transition-colors group cursor-default">
+              <motion.div variants={fadeInUp} key={i} className="bg-black p-8 hover:bg-zinc-900 transition-colors group cursor-default">
                 <div className="text-white/30 text-sm mb-4 group-hover:text-white/60 transition-colors">Chapter</div>
                 <h4 className="text-xl font-medium">{chapter}</h4>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="py-24 px-6 md:px-12 border-t border-white/10 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6"
+          >
             <div>
               <h2 className="font-display text-4xl md:text-5xl mb-4">Success Stories</h2>
               <p className="text-white/60">Hear from designers who scaled their business.</p>
@@ -298,7 +353,7 @@ export default function Page() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
-          </div>
+          </motion.div>
 
           <div className="overflow-hidden">
             <motion.div
@@ -331,9 +386,12 @@ export default function Page() {
       </section>
 
       {/* Author Section */}
-      <section className="py-24 px-6 md:px-12">
+      <section className="py-24 px-6 md:px-12" ref={authorRef}>
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          <div className="w-full md:w-1/3 aspect-[3/4] relative grayscale hover:grayscale-0 transition-all duration-700">
+          <motion.div 
+            style={{ y: authorY }}
+            className="w-full md:w-1/3 aspect-[3/4] relative grayscale hover:grayscale-0 transition-all duration-700"
+          >
              <div className="absolute inset-0 bg-zinc-800 rounded-lg overflow-hidden">
                 {/* Placeholder for Author Image */}
                 <Image 
@@ -343,8 +401,14 @@ export default function Page() {
                   className="object-cover"
                 />
              </div>
-          </div>
-          <div className="w-full md:w-2/3">
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="w-full md:w-2/3"
+          >
             <h2 className="font-display text-4xl mb-6">Meet Mantha</h2>
             <p className="text-xl text-white/70 mb-6 leading-relaxed">
               "I spent 5 years struggling as a freelancer before I cracked the code. Now, I run a 7-figure design agency. I wrote this book to save you the 5 years of trial and error."
@@ -354,14 +418,20 @@ export default function Page() {
                 Read Full Bio
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-32 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-white/5 skew-y-3 scale-110 pointer-events-none"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto text-center relative z-10"
+        >
           <h2 className="font-display text-5xl md:text-7xl mb-8">Ready to Scale?</h2>
           <p className="text-xl text-white/60 mb-12 max-w-2xl mx-auto">
             Join 10,000+ designers who have transformed their careers with this guide.
@@ -378,7 +448,7 @@ export default function Page() {
             </button>
           </div>
           <p className="mt-8 text-sm text-white/40">30-Day Money Back Guarantee • Secure Payment</p>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
