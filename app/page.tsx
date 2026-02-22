@@ -122,7 +122,7 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Hero Section - Matching the Screenshot */}
-      <section className="relative h-screen w-full flex flex-col justify-between p-6 md:p-12 lg:p-16 max-w-[1600px] mx-auto overflow-hidden">
+      <section className="relative h-screen w-full flex flex-col justify-between p-6 md:p-12 lg:p-16 max-w-[1600px] mx-auto z-10">
         
         {/* Top Labels */}
         <motion.div 
@@ -223,6 +223,7 @@ export default function Page() {
                 cy={150 - offset} 
                 rx="80" 
                 ry="20"
+                className="fill-black"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{ duration: 1.5, delay: 0.5 + (i * 0.1), ease: "easeInOut" }}
