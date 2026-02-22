@@ -368,7 +368,7 @@ export default function Page() {
                   className="px-2 md:px-4"
                   style={{ width: `${100 / testimonials.length}%` }}
                 >
-                  <div className="h-full p-6 md:p-8 border border-white/10 rounded-2xl bg-white/5 flex flex-col justify-between hover:bg-white/10 hover:scale-[1.02] transition-all duration-300 cursor-default">
+                  <div className="h-full p-6 md:p-8 border border-white/10 rounded-2xl bg-white/5 flex flex-col justify-between hover:bg-white/10 transition-all duration-300 cursor-default">
                     <div>
                       <Quote className="w-6 h-6 md:w-8 md:h-8 text-white/20 mb-4 md:mb-6" />
                       <p className="text-base md:text-xl font-light leading-relaxed mb-6 md:mb-8">"{testimonial.quote}"</p>
